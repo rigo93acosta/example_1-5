@@ -5,46 +5,52 @@ int main()
 {
     DigitalIn enterButton(BUTTON1);
     DigitalIn gasDetector(D2);
-    DigitalIn overTempDetector(D3);
-    DigitalIn aButton(D4);
-    DigitalIn bButton(D5);
-    DigitalIn cButton(D6);
-    DigitalIn dButton(D7);
+    //DigitalIn overTempDetector(D3);
+    DigitalIn aButton(D5);
+    DigitalIn bButton(D6);
+    DigitalIn cButton(D7);
+    //DigitalIn dButton(D7);
 
-    DigitalOut alarmLed(LED1);
-    DigitalOut incorrectCodeLed(LED3);
-    DigitalOut systemBlockedLed(LED2);
+    DigitalOut alarmLed(LED2);
+
+    DigitalOut incorrectCodeLed(D4);
+    DigitalOut systemBlockedLed(D8);
 
     gasDetector.mode(PullDown);
-    overTempDetector.mode(PullDown);
+    //overTempDetector.mode(PullDown);
     aButton.mode(PullDown);
     bButton.mode(PullDown);
     cButton.mode(PullDown);
-    dButton.mode(PullDown);
+    //dButton.mode(PullDown);
 
     alarmLed = OFF;
-    incorrectCodeLed = OFF;
-    systemBlockedLed = OFF;
+    incorrectCodeLed = OFF; //Azul
+    systemBlockedLed = OFF; //Rojo
 
     bool alarmState = OFF;
     int numberOfIncorrectCodes = 0;
 
     while (true) {
 
-        if ( gasDetector || overTempDetector ) {
+        if ( gasDetector) {
             alarmState = ON;
         }
 
         alarmLed = alarmState;
 
-        if ( numberOfIncorrectCodes < 5 ) {
+        //enterButton (BUTTON1) diferente al libro
+        /*if (!enterButton){
+            alarmState = OFF;
+            alarmLed = OFF;
+        }*/
+        if ( numberOfIncorrectCodes < 3 ) {
             
-            if ( aButton && bButton && cButton && dButton && !enterButton ) {
+            if ( aButton && bButton && cButton && enterButton) { //Desbloquer
                 incorrectCodeLed = OFF;
             }
 
-            if ( enterButton && !incorrectCodeLed && alarmState) {
-                if ( aButton && bButton && !cButton && !dButton ) {
+            if (!incorrectCodeLed && !enterButton && alarmState) {
+                if ( aButton && bButton && !cButton) { //Codigo desbloqueo
                     alarmState = OFF;
                     numberOfIncorrectCodes = 0;
                 } else {
